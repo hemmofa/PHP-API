@@ -1,54 +1,50 @@
 <?php
 /*
+ * PHP Data Retriever for Public Transport, based on phpNS
  * Copyright 2011 Jurrie Overgoor <jurrie@narrowxpres.nl>
- *
- * This file is part of phpNS.
- *
- * phpNS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * phpNS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * phpNS. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 Hemmo de Vries <github@hemmodevries.nl>
  */
-class ReisStop
+class JourneyStop
 {
-	private $naam;
-	private $tijd;
-	private $spoor;
-	private $spoorWijziging;
+	private $name;
+	private $time;
+	private $track;
+	private $trackChange;
+	private $departureDelay;
 
-	public function __construct($naam, $tijd, $spoor, $spoorWijziging)
+	public function __construct($name, $time, $track, $trackChange, $departureDelay)
 	{
-		$this->naam = $naam;
-		$this->tijd = $tijd;
-		$this->spoor = $spoor;
-		$this->spoorWijziging = $spoorWijziging;
+		$this->naam = $name;
+		$this->tijd = $time;
+		$this->spoor = $track;
+		$this->spoorWijziging = $trackChange;
+		$this->vertrekVertraging = $departureDelay;
 	}
 
-	public function getNaam()
+	public function getName()
 	{
 		return $this->naam;
 	}
 
-	public function getTijd()
+	public function getTime()
 	{
 		return $this->tijd;
 	}
 
-	public function getSpoor()
+	public function getTrack()
 	{
 		return $this->spoor;
 	}
 
-	public function isSpoorWijziging()
+	public function isTrackChanged()
 	{
 		return $this->spoorWijziging;
 	}
+	
+	public function getDepartureDelay()
+	{
+		return $this->vertrekVertraging;
+	}
+
 }
 ?>

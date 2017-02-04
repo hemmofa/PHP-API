@@ -1,89 +1,95 @@
 <?php
 /*
+ * PHP Data Retriever for Public Transport, based on phpNS
  * Copyright 2011 Jurrie Overgoor <jurrie@narrowxpres.nl>
- *
- * This file is part of phpNS.
- *
- * phpNS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * phpNS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * phpNS. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 Hemmo de Vries <github@hemmodevries.nl>
  */
-class VertrekkendeTrein
+class DepartingTrain
 {
-	private $ritNummer;
-	private $vertrekTijd;
-	private $vertrekVertraging;
-	private $vertrekVertragingTekst;
-	private $eindBestemming;
-	private $treinSoort;
-	private $vertrekSpoor;
-	private $vertrekSpoorGewijzigd;
-	private $opmerkingen;
+	private $shiftNumber;
+	private $departureTime;
+	private $departureDelay;
+	private $departureDelayText;
+	private $finalDestination;
+	private $trainType;
+	private $departureTrack;
+	private $departureTrackChanged;
+	private $remarks;
+	private $routeText;
+	private $journeyHint;
+	private $carrier;
 
-	public function __construct($ritNummer, $vertrekTijd, $vertrekVertraging, $vertrekVertragingTekst, $eindBestemming, $treinSoort, $vertrekSpoor, $vertrekSpoorGewijzigd, $opmerkingen)
+	public function __construct($shiftNumber, $departureTime, $departureDelay, $departureDelayText, $finalDestination, $trainType, $departureTrack, $departureTrackChanged, $remarks, $routeText, $journeyHint, $carrier)
 	{
-		$this->ritNummer = $ritNummer;
-		$this->vertrekTijd = $vertrekTijd;
-		$this->vertrekVertraging = $vertrekVertraging;
-		$this->vertrekVertragingTekst = $vertrekVertragingTekst;
-		$this->eindBestemming = $eindBestemming;
-		$this->treinSoort = $treinSoort;
-		$this->vertrekSpoor = $vertrekSpoor;
-		$this->vertrekSpoorGewijzigd = $vertrekSpoorGewijzigd;
-		$this->opmerkingen = $opmerkingen;
+		$this->ritNummer = $shiftNumber;
+		$this->vertrekTijd = $departureTime;
+		$this->vertrekVertraging = $departureDelay;
+		$this->vertrekVertragingTekst = $departureDelayText;
+		$this->eindBestemming = $finalDestination;
+		$this->treinSoort = $trainType;
+		$this->vertrekSpoor = $departureTrack;
+		$this->vertrekSpoorGewijzigd = $departureTrackChanged;
+		$this->opmerkingen = $remarks;
+		$this->routeTekst = $routeText;
+		$this->reisTip = $journeyHint;
+		$this->vervoerder = $carrier;
 	}
 
-	public function getRitNummer()
+	public function getShiftNumber()
 	{
 		return $this->ritNummer;
 	}
 
-	public function getVertrekTijd()
+	public function getDepartureTime()
 	{
 		return $this->vertrekTijd;
 	}
 
-	public function getVertrekVertraging()
+	public function getDepartureDelay()
 	{
 		return $this->vertrekVertraging;
 	}
 
-	public function getVertrekVertragingTekst()
+	public function getDepartureDelayText()
 	{
 		return $this->vertrekVertragingTekst;
 	}
 	 
-	public function getEindBestemming()
+	public function getFinalDestination()
 	{
 		return $this->eindBestemming;
 	}
 	 
-	public function getTreinSoort()
+	public function getTrainType()
 	{
 		return $this->treinSoort;
 	}
 	 
-	public function getVertrekSpoor()
+	public function getDepartureTrack()
 	{
 		return $this->vertrekSpoor;
 	}
 
-	public function isVertrekSpoorGewijzigd()
+	public function hasDepartureTrackChanged()
 	{
 		return $this->vertrekSpoorGewijzigd;
 	}
 
-	public function getOpmerkingen()
+	public function getRemarks()
 	{
 		return $this->opmerkingen;
+	}
+	public function getRouteText()
+	{
+		return $this->routeTekst;
+	}
+	public function getJourneyHint()
+	{
+		return $this->reisTip;
+	}
+	public function getCarrier()
+	{
+		return $this->vervoerder;
 	}
 }
 ?>

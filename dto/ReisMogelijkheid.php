@@ -1,97 +1,85 @@
 <?php
 /*
+ * PHP Data Retriever for Public Transport, based on phpNS
  * Copyright 2011 Jurrie Overgoor <jurrie@narrowxpres.nl>
- *
- * This file is part of phpNS.
- *
- * phpNS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * phpNS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * phpNS. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 Hemmo de Vries <github@hemmodevries.nl>
  */
 require_once(dirname(__FILE__).'/Melding.php');
 require_once(dirname(__FILE__).'/ReisDeel.php');
 
-class ReisMogelijkheid
+class JourneyOption
 {
-	private $aantalOverstappen;
-	private $geplandeReisTijd;
-	private $actueleReisTijd;
-	private $optimaal;
-	private $geplandeVertrekTijd;
-	private $actueleVertrekTijd;
-	private $geplandeAankomstTijd;
-	private $actueleAankomstTijd;
-	private $melding;
-	private $reisDelen;
+	private $numberOfChanges;
+	private $scheduledTravelTime;
+	private $actualTravelTime;
+	private $optimal;
+	private $plannedDepartureTime;
+	private $actualDepartureTime;
+	private $plannedArrivalTime;
+	private $actualArrivalTime;
+	private $alert;
+	private $journeyParts;
 
-	public function __construct($aantalOverstappen, $geplandeReisTijd, $actueleReisTijd, $optimaal, $geplandeVertrekTijd, $actueleVertrekTijd, $geplandeAankomstTijd, $actueleAankomstTijd, $melding, $reisDelen)
+	public function __construct($numberOfChanges, $scheduledTravelTime, $actualTravelTime, $optimal, $plannedDepartureTime, $actualDepartureTime, $plannedArrivalTime, $actualArrivalTime, $alert, $journeyParts)
 	{
-		$this->aantalOverstappen = $aantalOverstappen;
-		$this->geplandeReisTijd = $geplandeReisTijd;
-		$this->actueleReisTijd = $actueleReisTijd;
-		$this->optimaal = $optimaal;
-		$this->geplandeVertrekTijd = $geplandeVertrekTijd;
-		$this->actueleVertrekTijd = $actueleVertrekTijd;
-		$this->geplandeAankomstTijd = $geplandeAankomstTijd;
-		$this->actueleAankomstTijd = $actueleAankomstTijd;
-		$this->melding = $melding;
-		$this->reisDelen = $reisDelen;
+		$this->aantalOverstappen = $numberOfChanges;
+		$this->geplandeReisTijd = $scheduledTravelTime;
+		$this->actueleReisTijd = $actualTravelTime;
+		$this->optimaal = $optimal;
+		$this->geplandeVertrekTijd = $plannedDepartureTime;
+		$this->actueleVertrekTijd = $actualDepartureTime;
+		$this->geplandeAankomstTijd = $plannedArrivalTime;
+		$this->actueleAankomstTijd = $actualArrivalTime;
+		$this->melding = $alert;
+		$this->reisDelen = $journeyParts;
 	}
 
-	public function getAantalOverstappen()
+	public function getNumberOfChanges()
 	{
 		return $this->aantalOverstappen;
 	}
 
-	public function getGeplandeReisTijd()
+	public function getPlannedJourneyTime()
 	{
 		return $this->geplandeReisTijd;
 	}
 
-	public function getActueleReisTijd()
+	public function getActualJourneyTime()
 	{
 		return $this->actueleReisTijd;
 	}
 
-	public function isOptimaal()
+	public function isOptimal()
 	{
 		return $this->optimaal;
 	}
 
-	public function getGeplandeVertrekTijd()
+	public function getPlannedDepartureTime()
 	{
 		return $this->geplandeVertrekTijd;
 	}
 
-	public function getActueleVertrekTijd()
+	public function getActualDepartureTime()
 	{
 		return $this->actueleVertrekTijd;
 	}
 
-	public function getGeplandeAankomstTijd()
+	public function getPlannedArrivalTime()
 	{
 		return $this->geplandeAankomstTijd;
 	}
 
-	public function getActueleAankomstTijd()
+	public function getActualArrivalTime()
 	{
 		return $this->actueleAankomstTijd;
 	}
 
-	public function getMelding()
+	public function getAlert()
 	{
 		return $this->melding;
 	}
 
-	public function getReisDelen()
+	public function getJourneyParts()
 	{
 		return $this->reisDelen;
 	}

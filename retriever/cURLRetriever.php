@@ -1,26 +1,14 @@
 <?php
 /*
+ * PHP Data Retriever for Public Transport, based on phpNS
  * Copyright 2011 Jurrie Overgoor <jurrie@narrowxpres.nl>
- *
- * This file is part of phpNS.
- *
- * phpNS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * phpNS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * phpNS. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 Hemmo de Vries <github@hemmodevries.nl>
  */
 require_once(dirname(__FILE__).'/Retriever.php');
-require_once(dirname(__FILE__).'/NScURLRetrieverException.php');
+require_once(dirname(__FILE__).'/cURLRetrieverException.php');
 
 /**
- * A simple Retriever implementation that uses cURL to retrieve data from the NS.
+ * A simple Retriever implementation that uses cURL to retrieve the data.
  */
 class cURLRetriever extends Retriever
 {
@@ -28,54 +16,70 @@ class cURLRetriever extends Retriever
 	const SOAP_FAULTSTRING_START = "<faultstring>";
 	const SOAP_FAULTSTRING_END = "</faultstring>";
 
-	const XML_ERROR_INVALID_WEBSERVICE = 002; // 002:The requested webservice is not found
-	const XML_ERROR_INVALID_KEY = 006; // 006:No customer found for the specified username and password
-	const XML_ERROR_UNEXPECTED = 009; // 099:An unexpected exception occured
-	const XML_ERROR_LIMIT_REACHED = 013; // 013:The limit for calling this webservice has been reached
+	const XML_ERROR_INVALID_WEBSERVICE = 2; // 002:The requested webservice is not found
+	const XML_ERROR_INVALID_KEY = 6; // 006:No customer found for the specified username and password
+	const XML_ERROR_UNEXPECTED = 99; // 099:An unexpected exception occured
+	const XML_ERROR_LIMIT_REACHED = 13; // 013:The limit for calling this webservice has been reached
+	private $requests_log;
 
-	public function __construct($username, $password)
+	public function __construct($username, $password, $requests_log_file)
 	{
 		parent::__construct($username, $password);
+		$this->requests_log = $requests_log_file;
 	}
 
 	public function getStations()
 	{
-		return $this->getXML(parent::URL_STATIONS);
+		global $config;
+		return $this->getXML($config['api-url-stations']);
 	}
 
-	public function getPrijzen($fromStation, $toStation, $viaStation = null, $dateTime = null)
+	public function getRates($fromStation, $toStation, $viaStation = null, $dateTime = null)
 	{
-		return $this->getXML(parent::URL_PRIJZEN."?from=".$fromStation->getCode()."&to=".$toStation->getCode().($viaStation !== NULL ? "&via=".$viaStation->getCode() : "").($dateTime !== NULL ? "&dateTime=".Utils::UnixTimestamp2ISO8601Date($dateTime) : ""));
+		global $config;
+		return $this->getXML($config['api-url-rates']."?from=".$fromStation->getCode()."&to=".$toStation->getCode().($viaStation !== NULL ? "&via=".$viaStation->getCode() : "").($dateTime !== NULL ? "&dateTime=".Utils::UnixTimestamp2ISO8601Date($dateTime) : ""));
 	}
 
-	public function getActueleVertrektijden($station)
+	public function getDepartureBoard($station)
 	{
-		return $this->getXML(parent::URL_ACTUELEVERTREKTIJDEN."?station=".$station->getCode());
+		global $config;
+		return $this->getXML($config['api-url-departures']."?station=".$station->getCode());
 	}
 
-	public function getTreinplanner($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null)
+	public function getTrainScheduler($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null)
 	{
-		return $this->getXML(parent::URL_TREINPLANNER."?fromStation=".$fromStation->getCode()."&toStation=".$toStation->getCode().($viaStation !== NULL ? "&viaStation=".$viaStation->getCode() : "").($previousAdvices !== NULL ? "&previousAdvices=".$previousAdvices : "").($nextAdvices !== NULL ? "&nextAdvices=".$nextAdvices : "").($dateTime !== NULL ? "&dateTime=".Utils::UnixTimestamp2ISO8601Date($dateTime) : "").($departure !== NULL ? "&departure=".Utils::boolean2String($departure) : "").($hslAllowed !== NULL ? "&hslAllowed=".Utils::boolean2String($hslAllowed) : "").($yearCard !== NULL ? "&yearCard=".Utils::boolean2String($yearCard) : ""));
+		global $config;
+		return $this->getXML($config['api-url-journeyplanner']."?fromStation=".$fromStation."&toStation=".$toStation.($viaStation !== NULL ? "&viaStation=".$viaStation : "").($previousAdvices !== NULL ? "&previousAdvices=".$previousAdvices : "").($nextAdvices !== NULL ? "&nextAdvices=".$nextAdvices : "").($dateTime !== NULL ? "&dateTime=".substr(Utils::UnixTimestamp2ISO8601Date($dateTime),0,-6) : "").($departure !== NULL ? "&departure=".Utils::boolean2String($departure) : "").($hslAllowed !== NULL ? "&hslAllowed=".Utils::boolean2String($hslAllowed) : "").($yearCard !== NULL ? "&yearCard=".Utils::boolean2String($yearCard) : ""));
 	}
 
-	public function getStoringen($station = null, $actual = null, $unplanned = null)
+	public function getDisruptions($station = null, $actual = null, $unplanned = null, $language = 'nl')
 	{
-		return $this->getXML(parent::URL_STORINGEN.($station !== NULL ? "?station=".$station->getCode() : "?=").($actual !== NULL ? "&actual=".Utils::boolean2String($actual) : "").($unplanned !== NULL ? "&unplanned=".Utils::boolean2String($unplanned) : ""));
+		global $config;		
+		return $this->getXML($config['api-url-disruptions'].($station !== NULL ? "?station=".$station->getCode() : "?=").($actual !== NULL ? "&actual=".Utils::boolean2String($actual) : "").($unplanned !== NULL ? "&unplanned=".Utils::boolean2String($unplanned) : "") . "&language=" . $language);
 	}
 
 	private function getXML($url)
 	{
-	error_log($url);
+		if (!empty($this->requests_log)) {
+			$fid = fopen($this->requests_log, 'a');
+			flock($fid, LOCK_EX); // Do not check the return value, 'cause, whatcha gonna do if it failed? Just neglect to write? Let's write and pray.
+			fwrite($fid, date('r') . "\t$_SERVER[REMOTE_ADDR]\t$url\r\n");
+			flock($fid, LOCK_UN);
+			fclose($fid);
+		}
+
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($ch, CURLOPT_USERPWD, parent::getUsername() . ":" . parent::getPassword());
 		curl_setopt($ch, CURLOPT_TIMEOUT, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_ENCODING , "gzip");
 		$xml = curl_exec($ch);
 		
 		if (curl_errno($ch) != 0)
 		{
-			throw new NScURLRetrieverException(NScURLRetrieverException::TYPE_CURL, $url, curl_error($ch), curl_errno($ch));
+			die("<br/><br/>Er is een onverwachte fout opgetreden - onze excuses hiervoor. Klik op <a href=\"./index.php\">Home</a> om verder te gaan...");
+			throw new cURLRetrieverException(cURLRetrieverException::TYPE_CURL, $url, curl_error($ch), curl_errno($ch));
 		}
 		
 		curl_close($ch);
@@ -90,16 +94,16 @@ class cURLRetriever extends Retriever
 				$faultstring = substr($xml, $faultstringStartPosition + strlen(self::SOAP_FAULTSTRING_START), $faultstringEndPosition- $faultstringStartPosition - strlen(self::SOAP_FAULTSTRING_START));
 				if (preg_match("/^([0-9]+):(.+)$/", $faultstring, $matches) > 0)
 				{
-					throw new NScURLRetrieverException(NScURLRetrieverException::TYPE_XML, $url, $matches[2], $matches[1]);
+					throw new cURLRetrieverException(cURLRetrieverException::TYPE_XML, $url, $matches[2], $matches[1]);
 				}
 				else
 				{
-					throw new NScURLRetrieverException(NScURLRetrieverException::TYPE_XML, $url, $faultstring);
+					throw new cURLRetrieverException(cURLRetrieverException::TYPE_XML, $url, $faultstring);
 				}
 			}
 			else
 			{
-				throw new NScURLRetrieverException(NScURLRetrieverException::TYPE_XML, $url);
+				throw new cURLRetrieverException(cURLRetrieverException::TYPE_XML, $url);
 			}
 		}
 

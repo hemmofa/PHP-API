@@ -1,56 +1,65 @@
 <?php
 /*
+ * PHP Data Retriever for Public Transport, based on phpNS
  * Copyright 2011 Jurrie Overgoor <jurrie@narrowxpres.nl>
- *
- * This file is part of phpNS.
- *
- * phpNS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * phpNS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * phpNS. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 Hemmo de Vries <github@hemmodevries.nl>
  */
 require_once(dirname(__FILE__).'/ReisStop.php');
 
-class ReisDeel
+class JourneyPart
 {
-	private $reisSoort;
-	private $vervoerType;
-	private $ritNummer;
-	private $reisStops;
+	private $journeyType;
+	private $transportationType;
+	private $shiftNumber;
+	private $journeyStops;
+	private $carrier;
+	private $status;
+	private $journeyDetails;
 
-	public function __construct($reisSoort, $vervoerType, $ritNummer, $reisStops)
+	public function __construct($journeyType, $transportationType, $shiftNumber, $journeyStops, $carrier, $status, $journeyDetails)
 	{
-		$this->reisSoort = $reisSoort;
-		$this->vervoerType = $vervoerType;
-		$this->ritNummer = $ritNummer;
-		$this->reisStops = $reisStops;
+		$this->reisSoort = $journeyType;
+		$this->vervoerType = $transportationType;
+		$this->ritNummer = $shiftNumber;
+		$this->reisStops = $journeyStops;
+		$this->vervoerder = $carrier;
+		$this->status = $status;
+		$this->reisDetails = $journeyDetails;
 	}
 
-	public function getReisSoort()
+	public function getJourneyType()
 	{
 		return $this->reisSoort;
 	}
 
-	public function getVervoerType()
+	public function getTransportationType()
 	{
 		return $this->vervoerType;
 	}
 
-	public function getRitNummer()
+	public function getShiftNumber()
 	{
 		return $this->ritNummer;
 	}
 
-	public function getReisStops()
+	public function getJourneyStops()
 	{
 		return $this->reisStops;
+	}
+
+	public function getCarrier()
+	{
+		return $this->vervoerder;
+	}
+
+	public function getStatus()
+	{
+		return $this->status;
+	}
+
+	public function getJourneyDetails()
+	{
+		return $this->reisDetails;
 	}
 }
 ?>

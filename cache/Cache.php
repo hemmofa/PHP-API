@@ -1,20 +1,8 @@
 <?php
 /*
+ * PHP Data Retriever for Public Transport, based on phpNS
  * Copyright 2011 Jurrie Overgoor <jurrie@narrowxpres.nl>
- *
- * This file is part of phpNS.
- *
- * phpNS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * phpNS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * phpNS. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 Hemmo de Vries <github@hemmodevries.nl>
  */
 require_once(dirname(__FILE__).'/../retriever/Retriever.php');
 
@@ -28,11 +16,11 @@ abstract class Cache
 	private $retriever;
 
 	// Seconds to cache a previous result
-	private $timeToCacheStations = 86400; // 60 * 60 * 24
-	private $timeToCachePrijzen = 86400; // 60 * 60 * 24
-	private $timeToCacheActuelevertrektijden = 30;
-	private $timeToCacheTreinplanner = 60;
-	private $timeToCacheStoringen = 120; // 60 * 2
+	private $timeToCacheStations = 86400; 		// default is 60 * 60 * 24
+	private $timeToCachePrijzen = 86400; 		// default is 60 * 60 * 24
+	private $timeToCacheActuelevertrektijden = 30; 		// default is 30
+	private $timeToCacheTreinplanner = 60; 				// default is 60
+	private $timeToCacheStoringen = 120; 			// default is 60 * 2
 
 	public function __construct($retriever)
 	{
@@ -53,50 +41,50 @@ abstract class Cache
 	{
 		$this->timeToCacheStations = $timeToCacheStations;
 	}
-	public function getTimeToCachePrijzen()
+	public function getTimeToCacheRates()
 	{
 		return $this->timeToCachePrijzen;
 	}
 
-	public function setTimeToCachePrijzen($timeToCachePrijzen)
+	public function setTimeToCacheRates($timeToCachePrijzen)
 	{
 		$this->timeToCachePrijzen = $timeToCachePrijzen;
 	}
 
-	public function getTimeToCacheActuelevertrektijden()
+	public function getTimeToCacheDepartureBoard()
 	{
 		return $this->timeToCacheActuelevertrektijden;
 	}
 
-	public function setTimeToCacheActuelevertrektijden($timeToCacheActuelevertrektijden)
+	public function setTimeToCacheDepartureBoard($timeToCacheActuelevertrektijden)
 	{
 		$this->timeToCacheActuelevertrektijden = $timeToCacheActuelevertrektijden;
 	}
 
-	public function getTimeToCacheTreinplanner()
+	public function getTimeToCacheJourneyPlanner()
 	{
 		return $this->timeToCacheTreinplanner;
 	}
 
-	public function setTimeToCacheTreinplanner($timeToCacheTreinplanner)
+	public function setTimeToCacheJourneyPlanner($timeToCacheTreinplanner)
 	{
 		$this->timeToCacheTreinplanner = $timeToCacheTreinplanner;
 	}
 
-	public function getTimeToCacheStoringen()
+	public function getTimeToCacheDisruptions()
 	{
 		return $this->timeToCacheStoringen;
 	}
 
-	public function setTimeToCacheStoringen($timeToCacheStoringen)
+	public function setTimeToCacheDisruptions($timeToCacheStoringen)
 	{
 		$this->timeToCacheStoringen = $timeToCacheStoringen;
 	}
 
 	public abstract function getStations();
-	public abstract function getPrijzen($fromStation, $toStation, $viaStation = null, $dateTime = null);
-	public abstract function getActueleVertrektijden($station);
-	public abstract function getTreinplanner($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null);
-	public abstract function getStoringen($station, $actual = null, $unplanned = null);
+	public abstract function getRates($fromStation, $toStation, $viaStation = null, $dateTime = null);
+	public abstract function getDepartureBoard($station);
+	public abstract function getTrainScheduler($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null);
+	public abstract function getDisruptions($station, $actual = null, $unplanned = null, $language = 'nl');
 }
 ?>

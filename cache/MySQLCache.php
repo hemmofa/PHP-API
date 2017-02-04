@@ -1,20 +1,8 @@
 <?php
 /*
+ * PHP Data Retriever for Public Transport, based on phpNS
  * Copyright 2011 Jurrie Overgoor <jurrie@narrowxpres.nl>
- *
- * This file is part of phpNS.
- *
- * phpNS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * phpNS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * phpNS. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 Hemmo de Vries <github@hemmodevries.nl>
  */
 require_once(dirname(__FILE__).'/Cache.php');
 
@@ -145,45 +133,45 @@ class MySQLCache extends Cache
 		return $xml;
 	}
 
-	public function getPrijzen($fromStation, $toStation, $viaStation = null, $dateTime = null)
+	public function getRates($fromStation, $toStation, $viaStation = null, $dateTime = null)
 	{
-		$xml = $this->tryFromCache(self::ID_PRIJZEN, $this->getTimeToCachePrijzen(), $fromStation, $toStation, $viaStation, $dateTime);
+		$xml = $this->tryFromCache(self::ID_PRIJZEN, $this->getTimeToCacheRates(), $fromStation, $toStation, $viaStation, $dateTime);
 		if ($xml === NULL)
 		{
-			$xml = $this->getRetriever()->getPrijzen($fromStation, $toStation, $viaStation, $dateTime);
+			$xml = $this->getRetriever()->getRates($fromStation, $toStation, $viaStation, $dateTime);
 			$this->putInCache(self::ID_PRIJZEN, $xml, $fromStation, $toStation, $viaStation, $dateTime);
 		}
 		return $xml;
 	}
 
-	public function getActueleVertrektijden($station)
+	public function getDepartureBoard($station)
 	{
-		$xml = $this->tryFromCache(self::ID_ACTUELEVERTREKTIJDEN, $this->getTimeToCacheActuelevertrektijden(), $station);
+		$xml = $this->tryFromCache(self::ID_ACTUELEVERTREKTIJDEN, $this->getTimeToCacheDepartureBoard(), $station);
 		if ($xml === NULL)
 		{
-			$xml = $this->getRetriever()->getActueleVertrektijden($station);
+			$xml = $this->getRetriever()->getDepartureBoard($station);
 			$this->putInCache(self::ID_ACTUELEVERTREKTIJDEN, $xml, $station);
 		}
 		return $xml;
 	}
 
-	public function getTreinplanner($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null)
+	public function getTrainScheduler($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null)
 	{
-		$xml = $this->tryFromCache(self::ID_TREINPLANNER, $this->getTimeToCacheTreinplanner(), $fromStation, $toStation, $viaStation, $previousAdvices, $nextAdvices, $dateTime, $departure, $hslAllowed, $yearCard);
+		$xml = $this->tryFromCache(self::ID_TREINPLANNER, $this->getTimeToCacheJourneyPlanner(), $fromStation, $toStation, $viaStation, $previousAdvices, $nextAdvices, $dateTime, $departure, $hslAllowed, $yearCard);
 		if ($xml === NULL)
 		{
-			$xml = $this->getRetriever()->getTreinplanner($fromStation, $toStation, $viaStation, $previousAdvices, $nextAdvices, $dateTime, $departure, $hslAllowed, $yearCard);
+			$xml = $this->getRetriever()->getTrainScheduler($fromStation, $toStation, $viaStation, $previousAdvices, $nextAdvices, $dateTime, $departure, $hslAllowed, $yearCard);
 			$this->putInCache(self::ID_TREINPLANNER, $xml, $fromStation, $toStation, $viaStation, $previousAdvices, $nextAdvices, $dateTime, $departure, $hslAllowed, $yearCard);
 		}
 		return $xml;
 	}
 
-	public function getStoringen($station, $actual = null, $unplanned = null)
+	public function getDisruptions($station, $actual = null, $unplanned = null)
 	{
-		$xml = $this->tryFromCache(self::ID_STORINGEN, $this->getTimeToCacheStoringen(), $station, $actual, $unplanned);
+		$xml = $this->tryFromCache(self::ID_STORINGEN, $this->getTimeToCacheDisruptions(), $station, $actual, $unplanned);
 		if ($xml === NULL)
 		{
-			$xml = $this->getRetriever()->getStoringen($station, $actual, $unplanned);
+			$xml = $this->getRetriever()->getDisruptions($station, $actual, $unplanned);
 			$this->putInCache(self::ID_STORINGEN, $xml, $station, $actual, $unplanned);
 		}
 		return $xml;

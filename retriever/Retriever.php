@@ -1,20 +1,8 @@
 <?php
 /*
+ * PHP Data Retriever for Public Transport, based on phpNS
  * Copyright 2011 Jurrie Overgoor <jurrie@narrowxpres.nl>
- *
- * This file is part of phpNS.
- *
- * phpNS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * phpNS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * phpNS. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 Hemmo de Vries <github@hemmodevries.nl>
  */
 
 /**
@@ -29,12 +17,13 @@ abstract class Retriever
 	private $username;
 	private $password;
 
-	const URL_STATIONS = "http://webservices.ns.nl/ns-api-stations";
-	const URL_PRIJZEN = "http://webservices.ns.nl/ns-api-prijzen-v2";
-	const URL_ACTUELEVERTREKTIJDEN = "http://webservices.ns.nl/ns-api-avt";
-	const URL_TREINPLANNER = "http://webservices.ns.nl/ns-api-treinplanner";
-	const URL_STORINGEN = "http://webservices.ns.nl/ns-api-storingen";
-
+	// From now, API Url's are now set from config file. In case this ever gets used outside of the RPLN project, uncomment the following lines for NS usage.
+	// $config['api-url-stations'] = "http://webservices.ns.nl/ns-api-stations-v2"; // URL to API with Station data
+	// $config['api-url-rates'] = "http://webservices.ns.nl/ns-api-prijzen-v2"; // URL to API with Travel Rates / Prices
+	// $config['api-url-departures'] = "http://webservices.ns.nl/ns-api-avt"; // URL to API with Departure Board
+	// $config['api-url-journeyplanner'] = "http://webservices.ns.nl/ns-api-treinplanner"; // URL to API with Journeyplanner
+	// $config['api-url-disruptions'] = "http://webservices.ns.nl/ns-api-storingen"; // URL to API with Disruptions
+	
 	public function __construct($username, $password)
 	{
 		$this->username = $username;
@@ -52,9 +41,8 @@ abstract class Retriever
 	}
 
 	public abstract function getStations();
-	public abstract function getPrijzen($fromStation, $toStation, $viaStation = null, $dateTime = null);
-	public abstract function getActueleVertrektijden($station);
-	public abstract function getTreinplanner($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null);
-	public abstract function getStoringen($station = null, $actual = null, $unplanned = null);
+	public abstract function getRates($fromStation, $toStation, $viaStation = null, $dateTime = null);
+	public abstract function getDepartureBoard($station);
+	public abstract function getTrainScheduler($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null);
+	public abstract function getDisruptions($station = null, $actual = null, $unplanned = null, $language = 'nl');
 }
-?>

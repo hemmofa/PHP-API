@@ -1,20 +1,8 @@
 <?php
 /*
+ * PHP Data Retriever for Public Transport, based on phpNS
  * Copyright 2011 Jurrie Overgoor <jurrie@narrowxpres.nl>
- *
- * This file is part of phpNS.
- *
- * phpNS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * phpNS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * phpNS. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 Hemmo de Vries <github@hemmodevries.nl>
  */
 /**
  * This is a Cache implementation that actually does NOT do caching at all.
@@ -34,24 +22,24 @@ class NoCache extends Cache
 		return $this->getRetriever()->getStations();
 	}
 
-	public function getPrijzen($fromStation, $toStation, $viaStation = null, $dateTime = null)
+	public function getRates($fromStation, $toStation, $viaStation = null, $dateTime = null)
 	{
-		return $this->getRetriever()->getPrijzen($fromStation, $toStation, $viaStation, $dateTime);
+		return $this->getRetriever()->getRates($fromStation, $toStation, $viaStation, $dateTime);
 	}
 
-	public function getActueleVertrektijden($station)
+	public function getDepartureBoard($station)
 	{
-		return $this->getRetriever()->getActueleVertrektijden($station);
+		return $this->getRetriever()->getDepartureBoard($station);
 	}
 
-	public function getTreinplanner($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null)
+	public function getTrainScheduler($fromStation, $toStation, $viaStation = null, $previousAdvices = null, $nextAdvices = null, $dateTime = null, $departure = null, $hslAllowed = null, $yearCard = null)
 	{
-		return $this->getRetriever()->getTreinplanner($fromStation, $toStation, $viaStation, $previousAdvices, $nextAdvices, $dateTime, $departure, $hslAllowed, $yearCard);
+		return $this->getRetriever()->getTrainScheduler($fromStation, $toStation, $viaStation, $previousAdvices, $nextAdvices, $dateTime, $departure, $hslAllowed, $yearCard);
 	}
 
-	public function getStoringen($station, $actual = null, $unplanned = null)
+	public function getDisruptions($station, $actual = null, $unplanned = null, $language = 'nl')
 	{
-		return $this->getRetriever()->getStoringen($station, $actual, $unplanned);
+		return $this->getRetriever()->getDisruptions($station, $actual, $unplanned, $language);
 	}
 }
 ?>
